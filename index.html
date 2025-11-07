@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman</title>
+    <link rel="stylesheet" href="style.css"
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="game-title">Hangman!</h1>
+            <p class="subtitle">Test your vocabulary and mental agility</p>
+        </header>
+        
+        <div class="game-mode-selector">
+            <button class="mode-btn active" data-mode="single">Single Player</button>
+            <button class="mode-btn" data-mode="multi">Multiplayer</button>
+            <button class="mode-btn" data-mode="computer">VS Computer</button>
+        </div>
+        
+        <div class="game-setup-panel">
+            <!-- Single Player Setup -->
+            <div class="setup-section single-player-setup">
+                <h2>Choose Difficulty</h2>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                    <button class="difficulty-btn" data-difficulty="extreme">Extreme</button>
+                </div>
+                
+                <div class="level-selector">
+                    <h3>Select Level (1-1000)</h3>
+                    <input type="range" min="1" max="1000" value="1" class="level-slider">
+                    <span class="current-level">Level: 1</span>
+                </div>
+            </div>
+            
+            <!-- Multiplayer Setup -->
+            <div class="setup-section multiplayer-setup hidden">
+                <h2>Multiplayer Setup</h2>
+                <div class="player-setup">
+                    <div class="player">
+                        <h3>Player 1</h3>
+                        <input type="text" placeholder="Player 1 Name" class="player-name">
+                    </div>
+                    <div class="player">
+                        <h3>Player 2</h3>
+                        <input type="text" placeholder="Player 2 Name" class="player-name">
+                    </div>
+                </div>
+                
+                <div class="word-input-section">
+                    <h3>Enter Word to Guess</h3>
+                    <input type="text" class="word-input" placeholder="Enter word (min 4 letters)">
+                    <button class="submit-word">Submit Word</button>
+                </div>
+            </div>
+            
+            <!-- VS Computer Setup -->
+            <div class="setup-section computer-setup hidden">
+                <h2>Play Against Computer</h2>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn" data-difficulty="easy">Easy AI</button>
+                    <button class="difficulty-btn" data-difficulty="medium">Medium AI</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard AI</button>
+                </div>
+            </div>
+            
+            <button class="start-game-btn">Start Game</button>
+        </div>
+        
+        <main class="game-container hidden">
+            <div class="game-header">
+                <div class="game-info">
+                    <span class="level-display">Level: <span class="level-number">1</span></span>
+                    <span class="difficulty-display">Difficulty: <span class="difficulty-name">Easy</span></span>
+                    <span class="score-display">Score: <span class="score-value">0</span></span>
+                </div>
+                
+                <div class="player-info">
+                    <span class="player-turn">Player: <span class="player-name">You</span></span>
+                </div>
+            </div>
+            
+            <div class="hangman-container">
+                <div class="hangman-drawing">
+                    <!-- Hangman SVG will be inserted here -->
+                    <svg class="hangman-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Base -->
+                        <line x1="20" y1="180" x2="100" y2="180" class="hangman-part" id="base"></line>
+                        <line x1="40" y1="20" x2="40" y2="180" class="hangman-part" id="pole"></line>
+                        <line x1="40" y1="20" x2="120" y2="20" class="hangman-part" id="top-bar"></line>
+                        <line x1="120" y1="20" x2="120" y2="40" class="hangman-part" id="rope"></line>
+                        
+                        <!-- Man parts (initially hidden) -->
+                        <circle cx="120" cy="55" r="15" class="hangman-part hidden" id="head"></circle>
+                        <line x1="120" y1="70" x2="120" y2="110" class="hangman-part hidden" id="body"></line>
+                        <line x1="120" y1="80" x2="100" y2="70" class="hangman-part hidden" id="left-arm"></line>
+                        <line x1="120" y1="80" x2="140" y2="70" class="hangman-part hidden" id="right-arm"></line>
+                        <line x1="120" y1="110" x2="100" y2="130" class="hangman-part hidden" id="left-leg"></line>
+                        <line x1="120" y1="110" x2="140" y2="130" class="hangman-part hidden" id="right-leg"></line>
+                    </svg>
+                </div>
+                
+                <div class="clue-container">
+                    <h3>Clue:</h3>
+                    <p class="clue-text">This is a well-thought-out clue that will help you guess the word without making it too easy.</p>
+                </div>
+            </div>
+            
+            <div class="word-display">
+                <div class="letter-placeholder">_</div>
+                <div class="letter-placeholder">_</div>
+                <div class="letter-placeholder">_</div>
+                <div class="letter-placeholder">_</div>
+                <div class="letter-placeholder">_</div>
+                <!-- More placeholders will be added dynamically -->
+            </div>
+            
+            <div class="keyboard">
+                <div class="keyboard-row">
+                    <button class="key-btn" data-key="Q">Q</button>
+                    <button class="key-btn" data-key="W">W</button>
+                    <button class="key-btn" data-key="E">E</button>
+                    <button class="key-btn" data-key="R">R</button>
+                    <button class="key-btn" data-key="T">T</button>
+                    <button class="key-btn" data-key="Y">Y</button>
+                    <button class="key-btn" data-key="U">U</button>
+                    <button class="key-btn" data-key="I">I</button>
+                    <button class="key-btn" data-key="O">O</button>
+                    <button class="key-btn" data-key="P">P</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="key-btn" data-key="A">A</button>
+                    <button class="key-btn" data-key="S">S</button>
+                    <button class="key-btn" data-key="D">D</button>
+                    <button class="key-btn" data-key="F">F</button>
+                    <button class="key-btn" data-key="G">G</button>
+                    <button class="key-btn" data-key="H">H</button>
+                    <button class="key-btn" data-key="J">J</button>
+                    <button class="key-btn" data-key="K">K</button>
+                    <button class="key-btn" data-key="L">L</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="key-btn" data-key="Z">Z</button>
+                    <button class="key-btn" data-key="X">X</button>
+                    <button class="key-btn" data-key="C">C</button>
+                    <button class="key-btn" data-key="V">V</button>
+                    <button class="key-btn" data-key="B">B</button>
+                    <button class="key-btn" data-key="N">N</button>
+                    <button class="key-btn" data-key="M">M</button>
+                </div>
+            </div>
+            
+            <div class="game-controls">
+                <button class="hint-btn">Get Hint</button>
+                <button class="skip-btn">Skip Word</button>
+                <button class="pause-btn">Pause</button>
+            </div>
+        </main>
+        
+        <div class="game-over-screen hidden">
+            <h2 class="result-title">Game Over</h2>
+            <p class="result-message">The word was: <span class="correct-word">EXAMPLE</span></p>
+            <div class="result-stats">
+                <p>Level Reached: <span class="final-level">1</span></p>
+                <p>Score: <span class="final-score">0</span></p>
+                <p>Words Solved: <span class="words-solved">0</span></p>
+            </div>
+            <div class="game-over-buttons">
+                <button class="play-again-btn">Play Again</button>
+                <button class="main-menu-btn">Main Menu</button>
+            </div>
+        </div>
+        
+        <div class="pause-menu hidden">
+            <h2>Game Paused</h2>
+            <div class="pause-menu-buttons">
+                <button class="resume-btn">Resume Game</button>
+                <button class="restart-btn">Restart Level</button>
+                <button class="quit-btn">Quit to Menu</button>
+            </div>
+        </div>
+        
+        <div class="multiplayer-turn-screen hidden">
+            <h2>Player Turn</h2>
+            <p class="turn-player-name">Player 1</p>
+            <p>Look away while the next player enters a word</p>
+        </div>
+        
+        <div class="animation-container">
+            <!-- This container will be used for special animations -->
+        </div>
+        
+        <footer>
+            <p class="game-tip">Tip: Use hints strategically for harder levels!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
